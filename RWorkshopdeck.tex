@@ -1,10 +1,11 @@
 \documentclass{beamer}
 \usetheme{Hannover}
 % \usepackage{beamerthemesplit} // Activate for custom appearance
-\usepackage{mathtools,parskip} 
+\usepackage{mathtools,parskip,hyperref,courier} 
 
-\title[MGLC R Workshop]{MGLC Transferable Skills Workshop: R}
-\author{Sahil Shah
+\title[MGLC \\ R Workshop]{MGLC Transferable Skills Workshop: R}
+\author[Sahil Shah]{Sahil Shah \vfill 
+	\href{mailto:sahil.shah@u.northwestern.edu}{sahil.shah@u.northwestern.edu}}
 \date{May 27, 2015}
 
 \begin{document}
@@ -14,84 +15,162 @@
 \section[Outline]{}
 \frame{\tableofcontents}
 
-% In Mentor Wkbk Rosemary suggested Research oriented teaching
-% Teach how to do k means, regression etc in R. This was useful to…
-% Put up materials on GitHub. 
-
-% What is the framework of previous workshops? Number of sessions, people, length
-
-% What is the content of the Software Carpentary R workshop?
-% What is the content of Hadley Wickham's R workshops?
-% How does chw post class materials etc?
-
-
-% Cap it.
-% Put studnets into group slike in Sarh Iams recitations 
-% Pass out a cheat sheet of commands, etc
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{}
+\section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	
+% 15 minutes? Introdutions? Ice breakers
+
 \frame{
 	\frametitle{Acknowledgments}
 	
 	\begin{itemize}
-		\item McCormick Graduate Leadership Council (MGLC) Members
-		\item Eric Earley, Hayley Belli, Paula Straaton, Bruce Lindvall, 
-		
+		\item McCormick Graduate Leadership Council (MGLC)
+		\item Eric Earley, Hayley Belli, Paula Straaton, Bruce Lindvall
 	\end{itemize}
 	
+	Advanced R by Hadley Wickham
+
 }
 
 \frame{
-	\frametitle{Introduction}
+	\frametitle{Schedule}
 	
 	\begin{itemize}
-		\item We'll ask basic questions about this data set to learn the syntax,style etc in R
 		\item I'll lecture and you can follow along with my slides
 		\item Then we'll break for dinner.
-		\item Then you'll reproduce to examples I presented . You'll pair up ask each and ask me questions 
-			
+		\item Then you'll reproduce to examples I presented . 
+		      You'll pair up ask each and ask me questions 
 	\end{itemize}
 	
 }
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{}
+\section{Data Set: Count and Plot, Classification, Regression, Networks}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%We'll ask basic questions about this data set to learn the syntax,style etc in R
+
 
 % Input data. 
 % ?, str, etc
 % packages...
 % console vs. scripts.
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{}
+\section{R Fundamentals}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \frame{
-	\frametitle{References}
+	\frametitle{Data types}
 	
 	\begin{itemize}
-		\item http://adv-r.had.co.nz/
-		\item 
+		\item R has no 0-dimensional, or scalar types. 
+		\item Individual numbers or strings are actually vectors of length one
+		\item \texttt{str()} gives short description of any R data structure
+	\end{itemize}
+	
+	\begin{itemize}
+		\item Logical
+		\item Integer
+		\item Double (aka Numeric)
+		\item Character
+	\end{itemize}
+	
+}
+
+\frame{
+	\frametitle{Data structures}
+	
+	Homogenous data structures
+	\begin{itemize}
+		\item[1d] Atomic vector
+		\item[2d] Matrix
+		\item[nd] Array
+	\end{itemize}
+	
+	Heterogeneous data structures
+	\begin{itemize}
+		\item[1d] List
+		\item[2d] Data frame
+	\end{itemize}
+	
+}
+
+\frame{
+	\frametitle{Subsetting}
+
+
+
+}
+
+
+\frame{
+	\frametitle{Functions}
+
+
+}
+
+
+\frame{
+	\frametitle{Functionals}
+	
+	`Split-Combine-Apply'
+	
+	lapply
+
+}
+
+\frame{
+
+	\frametitle{Loops}
+	
+	\begin{itemize}
+		\item
+		\item \texttt{while}
 		
 	\end{itemize}
 	
 }
 
+\frame{
+	\frametitle{Plotting}
+
+
+}
 
 \frame{
+	\frametitle{Style}
+	
+	Use a consistent style
+	
+	\begin{itemize}
+		\item Strive for names that are concise and meaningful 
+		\item Use \texttt{<-} not \texttt{=} for assignment
+		\item Comment with \texttt{\#}
+		
+	\end{itemize}
 
-    \begin{figure}[h!]
-      \centering
-        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{figs/HotNet2-Title.png}
-    \end{figure}
+}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hands-On Practice}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Put students into group slike in Sarh Iams recitations 
+
+\frame{
+	\frametitle{References}
+	
+	\begin{itemize}
+		\item \url{http://adv-r.had.co.nz/}
+		\item \url{http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml}
+		\item \url{http://www.statmethods.net/}
+		\item \url{http://nicercode.github.io/}
+		\item \url{http://stackoverflow.com/}
+		
+	\end{itemize}
+	
 }
 
 \end{document}
