@@ -19,7 +19,7 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% 15 minutes? Introdutions? Ice breakers
+% 15 minutes? Introductions? Ice breakers
 
 \frame{
 	\frametitle{Acknowledgments}
@@ -28,8 +28,6 @@
 		\item McCormick Graduate Leadership Council (MGLC)
 		\item Eric Earley, Hayley Belli, Paula Straaton, Bruce Lindvall
 	\end{itemize}
-	
-	Advanced R by Hadley Wickham
 
 }
 
@@ -37,24 +35,47 @@
 	\frametitle{Schedule}
 	
 	\begin{itemize}
-		\item I'll lecture and you can follow along with my slides
-		\item Then we'll break for dinner.
-		\item Then you'll reproduce to examples I presented . 
-		      You'll pair up ask each and ask me questions 
+		\item[5:30-6:30pm] Introduction \& R Fundamentals
+		\item[6:30-7:30pm] Dinner 
+		\item[7:30-8:30pm] Hands-on
 	\end{itemize}
 	
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Wine Data Set]{UCI ML Repository: Wine Data Set}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{
+	\frametitle{Wine Data Set}
 	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Data Set: Count and Plot, Classification, Regression, Networks}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	We'll ask basic questions about this data set to learn R.
+	\url{https://archive.ics.uci.edu/ml/index.html}
+	
+	\begin{itemize}
+		\item 178 samples, 13 attributes (+ CLASS)
+		\item Chemical analysis of wine from three different cultivators
+	\end{itemize}
 
-%We'll ask basic questions about this data set to learn the syntax,style etc in R
+}
 
-% Input data. 
-% ?, str, etc
-% packages...
-% console vs. scripts.
+\frame{
+	\frametitle{}
+
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+wine <- read.table('wine.txt',header=FALSE,sep=',')
+
+par(mfrow=c(2,7))
+for (colNumber in 1:14) {
+	hist(mydata[,colNumber],main='',xlab=paste('V',colNumber,sep=''),col='red')	
+}
+
+
+@
+
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{R Fundamentals}
@@ -68,21 +89,26 @@
 		\item \texttt{?}
 		\item \texttt{str()} gives short description of any R data structure
 		\item \texttt{ls}
+		\item Comment with \texttt{\#}
 	
 	\end{itemize}
 
 }
 
 \frame{
+	\frametitle{Packages}
+
+
+
+}
+
+
+\frame{
 	\frametitle{Importing Data}
 	
 	\texttt{read.table}
 	
-	header	
-	a logical value indicating whether the file contains the names of the variables as its first line.
-
-
-
+	header a logical value indicating whether the file contains the names of the variables as its first line
 
 }
 
@@ -127,10 +153,8 @@
 \frame{
 	\frametitle{Subsetting}
 	
-	\texttt{$}
-
-
-
+	\texttt{\$}
+	
 }
 
 
@@ -146,7 +170,7 @@
 	
 	`Split-Combine-Apply'
 	
-	lapply
+	\texttt{lapply}
 
 }
 
@@ -168,19 +192,19 @@
 
 }
 
-\frame{
-	\frametitle{Style}
-	
-	Use a consistent style
-	
-	\begin{itemize}
-		\item Strive for names that are concise and meaningful 
-		\item Use \texttt{<-} not \texttt{=} for assignment
-		\item Comment with \texttt{\#}
-		
-	\end{itemize}
-
-}
+% \frame{
+% 	\frametitle{Style}
+%
+% 	Use a consistent style
+%
+% 	\begin{itemize}
+% 		\item Strive for names that are concise and meaningful
+% 		\item Use \texttt{<-} not \texttt{=} for assignment
+% 		\item Comment with \texttt{\#}
+%
+% 	\end{itemize}
+%
+% }
 
 \frame{
 	\frametitle{Sweave}

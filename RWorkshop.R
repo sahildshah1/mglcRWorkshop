@@ -65,6 +65,7 @@ knn
 
 #========= Networks
 
+load(igraph)
 corAlcohol <- cor(t(mydata[,2:14]),method='spearman')
 
 
