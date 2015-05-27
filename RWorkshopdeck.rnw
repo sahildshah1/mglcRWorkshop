@@ -43,6 +43,19 @@
 	
 }
 
+\frame{
+	\frametitle{Icebreaker}
+	
+	Introduce yourself to your immediate neighbors and tell them: 
+	\begin{itemize}
+		\item Your department and/or research interests
+		\item Your favorite programming language
+		\item Your level of experience with R
+	\end{itemize}
+
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section[Wine Data Set]{UCI ML Repository: Wine Data Set}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,85 +63,96 @@
 \frame{
 	\frametitle{Wine Data Set}
 	
-	We'll ask basic questions about this data set to learn R.
+	%We'll ask basic questions about this data set to learn R.
+	
+	The UCI ML Repository: Wine Data Set: 
 	\url{https://archive.ics.uci.edu/ml/index.html}
 	
+	\vspace{\baselineskip}
+	
 	\begin{itemize}
-		\item 178 samples, 13 attributes (+ CLASS)
 		\item Chemical analysis of wine from three different cultivators
+		\item 178 samples, 13 attributes (+ CLASS)
 	\end{itemize}
 
 }
 
 \frame{
-	\frametitle{Wine Data Set}
+	\frametitle{Wine Data Set: V3 (Malic acid)}
 
 \begin{figure}
 \centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
+# Import the Wine Data Set.
 wineData <- read.table('~/Documents/mglcRWorkshop/wine.txt',header=FALSE,sep=',')
-
-par(mfrow=c(2,7))
-for (colNumber in 1:14) {
-	hist(wineData[,colNumber],main='',xlab=paste('V',colNumber,sep=''),col='firebrick1')
-		
-}
-
-@
-\end{figure}
-
-}
-
-\frame{
-	\frametitle{Wine Data Set}
-
-\begin{figure}
-\centering
-<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
-
-pairs(wineData,col='blue')
-
-@
-\end{figure}
-
-}
-
-
-\frame{
-	\frametitle{V3: Malic acid}
-	
-\begin{figure}
-\centering
-<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
-
 
 par(mfrow=c(3,1))
 hist(wineData[,3],col='gold',breaks=25,main='Histogram of V3',xlab="")
 boxplot(wineData[,3],horizontal=TRUE,col='lightblue',main='Boxplot of V3')
 stripchart(wineData[,3],col='red',main='Stripchart of V3')
 
-@
 
+@
 \end{figure}
 
 }
 
 \frame{
-	\frametitle{V8 vs V7}
+	\frametitle{Wine Data Set: Scatterplot Matrix}
+
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+#You can find them in the example section of help(pairs)
+panel.hist <- function(x, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+pairs(wineData,upper.panel=panel.cor,diag.panel=panel.hist)
+
+@
+\end{figure}
+
+}
+
+
+\frame{
+	\frametitle{Wine Data Set: Total phenols vs Flavanoids}
 	
 \begin{figure}
 \centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
-	
+
+# Calculate pearson correlation
 pearsonCor <- cor(wineData[,7],wineData[,8],method='pearson')
 
 plot(wineData[,7],wineData[,8],
-	main=paste("V8 vs. V7, Correlation: ",round(pearsonCor,2)),
+	main=paste("V8 vs. V7 Scatterplot (Correlation: ",round(pearsonCor,2),")",sep=''),
 	xlab="V7 (Total phenols)",
 	ylab="V8 (Flavanoids)")
 
 abline(lm(V8~V7,data=wineData), col="red")
+
+# Summary of linear model
 #summary(lm(V8~V7,data=wineData))
 
 @
@@ -137,35 +161,22 @@ abline(lm(V8~V7,data=wineData), col="red")
 }
 
 
-% \frame{
-% 	\frametitle{K-means}
-%
-% \begin{figure}
-% \centering
-% <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
-%
-% @
-% \end{figure}
-%
-% }
-
-
 \frame{
-	\frametitle{}
+	\frametitle{Wine Data Set: Network}
 	
 \begin{figure}
 \centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
-library(igraph)
-wineCor <- cor(t(wineData[,2:14]),method='pearson')
+# Create wine correlation matrix. NB. t() transpose of the matrix 
+wineCor <- cor(t(wineData[,2:14]),method='spearman')
 
-# 178 observations => 15753 unique pairs
-corThres <- sort(wineCor[upper.tri(wineCor)],decreasing=TRUE)[round(0.05*15753)]
+corThres <- 0.99
 
 wineCor[wineCor<corThres] <- 0
 wineCor[wineCor>=corThres] <- 1
 
+library(igraph)
 wineGraph <- graph.adjacency(wineCor, mode="undirected", weighted=NULL, diag=FALSE)
 
 plot(wineGraph)
@@ -177,13 +188,14 @@ plot(wineGraph)
 }
 
 \frame{
-	\frametitle{Degree distribution}
+	\frametitle{Wine Data Set: Graph Components ($N$)}
 	
 \begin{figure}
 \centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
-graphComponents <- lapply(decompose.graph(wineGraph), function(component){
+# Create a list 
+graphComponents <- lapply(decompose.graph(wineGraph,min.vertices = 3), function(component){
 	
 	numNodes <- length(V(component))
 	degrees <- degree(component)
@@ -193,14 +205,14 @@ graphComponents <- lapply(decompose.graph(wineGraph), function(component){
 	
 })
 
-par(mfrow=c(2,5))
+par(mfrow=c(2,2))
 
-for (compNumber in 1:10){
+for (compNumber in 1:length(graphComponents)){
 	
 	hist(graphComponents[[compNumber]]$degrees,
 		 col='gold',
 		 breaks=25,
-		 main=paste("Degree distribution (N=",graphComponents[[compNumber]]$numNodes,")",sep=''),
+		 main=paste("Degree Distribution (N=",graphComponents[[compNumber]]$numNodes,")",sep=''),
 		 xlab="")	
 }
 
@@ -215,67 +227,111 @@ for (compNumber in 1:10){
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \frame{
-	\frametitle{Working with R}
-	
-	\begin{itemize}
-	
-		\item \texttt{?}
-		\item \texttt{ls()} 
-		\item \texttt{rm()}
-		\item \texttt{getwd()}
-		\item \texttt{setwd()}
-		\item \texttt{str()} %gives short description of any R data structure
-		\item \texttt{\#} %Comment
-		\item \texttt{source()}
-		\item \texttt{<-}
-	
-	\end{itemize}
-
-}
-
-\frame{
 	\frametitle{Packages}
 	
+	Repositories
 	\begin{itemize}
-		
+		\item CRAN (as of today) has \textbf{6690} packages for modeling, visualization, etc.
+		\item Bioconductor (as of today) has \textbf{1024} packages for analysis of high-throughput genomic data
+	\end{itemize} 
+	
+	\vspace{\baselineskip}
+	
+	Download and load packages with 
+	\begin{itemize}
 		\item \texttt{install.packages()}
 		\item \texttt{library()}
-		\item Comprehensive R Archive Network (CRAN) 
-		\item Bioconductor 
-		\item \texttt{igraph,lattice,ggplot2,dplyr}
-		
-	\end{itemize}
+	\end{itemize} 
 	
-
+	\vspace{\baselineskip}
+	
+	%Useful packages include \texttt{igraph,lattice,ggplot2,dplyr}
+	
 }
 
 \frame{
 	\frametitle{Importing Data}
 	
+	Import data from a CSV file or install packages to \textbf{directly} import form Excel, Stata, etc.
 	\begin{itemize}
-		\item[CSV]  \texttt{read.table()}
-		\item[Excel] \texttt{read.xlsx()}
-		\item[Stata] \texttt{read.dta()}
+		\item \textbf{CSV}: \texttt{read.table()} : NB. The default separator is a white space
+		\item \textbf{Excel}: \texttt{read.xlsx()}
+		\item \textbf{Stata}: \texttt{read.dta()}
+	\end{itemize}
+
+}
+
+\frame[shrink]{
+	\frametitle{Sweave}
+	
+	Create dynamic reports (i.e. reproducible research) with Sweave
+	\begin{itemize}
+		\item Combine both LaTeX and R code in one document
+		\item Part of every installation 	
 	\end{itemize}
 	
-	\texttt{read.table()}
+	\vspace{\baselineskip}
+	
+	\texttt{*.rnw} $\rightarrow$ \texttt{*.tex} $\rightarrow $\texttt{*.pdf}
 	\begin{itemize}
-		\item \texttt{header}
-		\item \texttt{sep}
+		\item Begin with a LaTeX document, but with the extensions \texttt{*.rnw}
+		\item R commands start with \texttt{$\ll \gg =$} and end with \texttt{@}
+		\item Process the Sweave file in R with \texttt{Sweave()} and compile the resulting \texttt{*.tex} file
 	\end{itemize}
 	
+}
+
+\frame{
+	\frametitle{Quest}
+	
+	\begin{itemize}
+		\item \texttt{R} is installed on Quest
+		\item Install packages by logging in  and using \texttt{install.packages()}
+		\item Submit a job by creating a submission script and \texttt{*.R} script 
+	\end{itemize}
 
 }
 
 
-\frame{
-	\frametitle{Data types}
+\frame[shrink]{
+	\frametitle{Working with R}
 	
 	\begin{itemize}
-		\item R has no 0-dimensional, or scalar types. 
-		\item Individual numbers or strings are actually vectors of length one
+		\item \texttt{?} : pop-out help for stated function
+		\item \texttt{str()} : short description of any R data structure
+		\item \texttt{getwd()}
+		\item \texttt{setwd()}
+		\item \texttt{ls()} : returns a vector of strings giving names of objects
+		\item \texttt{rm()} : pass in either an object or (with the \texttt{list} argument) character vector naming the object 
 	\end{itemize}
 	
+	\vspace{\baselineskip}
+	
+	\textbf{How do you clear your workspace?}
+	% A: rm(list=ls())
+	
+}
+
+% \frame{
+% 	\frametitle{Working with R}
+%
+% 	\begin{itemize}
+% 		\item \texttt{<-}
+% 		\item \texttt{\#} Comment
+% 		\item \texttt{source()}
+%		\item \texttt{save}
+%		\item \texttt{assign}
+%		\item \texttt{get}
+%		\item \texttt{NA}
+% 	\end{itemize}
+%
+% }
+
+
+\frame{
+	\frametitle{Data Manipulation: Data Types}
+		
+	There are four types of data. 
 	\begin{enumerate}
 		\item Logical
 		\item Integer
@@ -283,139 +339,266 @@ for (compNumber in 1:10){
 		\item Character
 	\end{enumerate}
 	
+	\vspace{\baselineskip}
+	
+	NB. Individual numbers or strings are actually vectors of length one
+	
 }
 
-\frame{
-	\frametitle{Data structures}
+\frame[shrink]{
+	\frametitle{Data Manipulation: Data Structures}
 	
 	Homogenous data structures
 	\begin{itemize}
-		\item[1d] Atomic vector
-		\item[2d] Matrix
-		\item[nd] Array
+		\item 1d: Atomic vector: \texttt{c()}
+		\item 2d: Matrix: \texttt{matrix()}
+		\item nd: Array
 	\end{itemize}
 	
 	Heterogeneous data structures
 	\begin{itemize}
-		\item[1d] List
-		\item[2d] Data frame
+		\item 1d: List: \texttt{list()}
+		\item 2d: Data frame: \texttt{data.frame()}
 	\end{itemize}
+	
+	\vspace{\baselineskip}
+	
+	%NB. The best way to inspect an object is with \texttt{str}
+	NB. Factors is a vector that can contain only predefined values (\textbf{cf.} Advanced R by Hadley Wickham)
 	
 }
 
 \frame{
-	\frametitle{Subsetting}
+	\frametitle{Data Manipulation: Lists}
 	
-	\texttt{\$}
+	\begin{itemize}
+		\item Three properties: Type (e.g. Double), Length, Attributes (Arbitrary metadata)
+		\item Attributes include: Names and Dimensions
+		\item The elements of a list can have different types. NB. Lists can contain other lists.
+		%\item Coercion \item \texttt{sum(),mean()}: \texttt{T} becomes 1, \texttt{F} becomes 0
+		\item Under the hood, data frames are lists of equal length vectors
+		\item Linear model objects (\texttt{lm()}) are lists
+	\end{itemize}
 	
-	You need [[ when working with lists. 
-	This is because when [ is applied to a list it always returns a list: 
-	it never gives you the contents of the list. To get the contents, you need [[:
+	\vspace{\baselineskip}
 	
-	Simplifying vs. preserving
+	\textbf{If the columns of a data frame are of different types, 
+		   can the elements of a column be of different types?}
+	% A: No. Data frames are lists of equal length vectors
+	
+
 }
 
+
+\frame{
+	\frametitle{Data Manipulation: Subsetting}
+	
+	With the subsetting operator \texttt{[}, you can use
+	\begin{itemize}
+		\item Positive integers: return elements at specified positions
+		\item Negative integers:  omit elements at specified positions
+		\item Logical vectors:  select elements where the logical value is \texttt{T}
+		%\item Nothing
+		%\item Zero
+		\item Character vectors: return elements with matching names.
+	\end{itemize}
+	
+
+}
+
+
+\frame{
+	\frametitle{Data Manipulation: Subsetting}
+	
+	\begin{itemize}
+		\item Using \texttt{[} will always return a list, \texttt{[[} pulls out the elements of a list 
+	
+		\item `If list \texttt{x} is a train carrying objects, then \texttt{x[[5]]} is the object in car 5;
+		\texttt{x[4:6] is a train of cars 4-6}'
+	
+		\item Include \texttt{drop=F} when subsetting matrices and data frames
+	
+		\item To modify selected values, values combine subsetting with \texttt{<-} (assignment)
+	\end{itemize}
+	
+	\vspace{\baselineskip}
+	
+	\textbf{If \texttt{sample(x)} takes a sample from the elements of \texttt{x}, how can you use \texttt{sample()} 
+	to randomly permute the columns of a data frame?}
+	
+	%A: df[,sample(ncol(df))]
+
+}
+
+\frame[shrink]{
+	\frametitle{`Split-Apply-Combine'}
+	
+	R has standard control structures
+	\begin{itemize}
+		\item \texttt{for (var in seq)\{ expr \} }
+		\item \texttt{while (cond)\{ expr \} }
+		\item \texttt{if (cond) expr1 else expr2}
+	\end{itemize}
+	
+	\vspace{\baselineskip}
+	
+	but it has built in `functionals' that take in a function
+	apply it to each component and then combine the results
+	\begin{itemize}
+		\item \texttt{lapply} applies a function to each element in a list and returns a list
+		\item \texttt{lapply(x,function(){})}
+		\item Other loop functionals use different types of input and output (\textbf{cf. \texttt{dplyr}})
+	\end{itemize}	
+	
+	NB. You can loop over the elements, numeric indices, or the names.
+
+}
 
 \frame{
 	\frametitle{Functions}
 	
-	\texttt{myfunction <- function(arg1,\dots)\{ statements return(object)\}}
-
-
-}
-
-\frame{
-	\frametitle{Control Statements}
+	Abstract code into small functions
+	
+	\vspace{\baselineskip}
+	
+	\texttt{myfunction <- function(arg1,arg2=3,\dots)\{ statements return(object)\}}
+	
+	\vspace{\baselineskip}
 	
 	\begin{itemize}
-		\item \texttt{for (var in seq)\{ expr \}
-		\item \texttt{while (cond)\{ expr \} 
-		\item \texttt{if (cond) expr1 else expr2}
-		
+		\item Arguments can have default values (e.g. \texttt{arg2} above)
+		\item It's not necessary a function return anything (e.g. plotting)
+		\item Use the \texttt{source()} to load functions
 	\end{itemize}
+	
 
 }
 
-
-\frame{
-	\frametitle{Functionals}
-	
-	`Split-Combine-Apply'
-	
-	\begin{itemize}
-		\item \texttt{lapply}
-		\item \texttt{sapply}
-		\item cf \texttt{dplyr}
-	\end{itemize}
-
-}
-
-
-\frame{
+\frame[shrink]{
 	\frametitle{Plotting}
 	
+	R has strong graphical capabilities and can create for example
+	
 	\begin{itemize}
-		\item \texttt{hist()}
-		\item \texttt{boxplot()}
-		\item \texttt{plot()}
+		\item Density plots: \texttt{hist()} 
+		\item Boxplots: \texttt{boxplot()}
+		\item Scatter plots: \texttt{plot()}: Use \texttt{abline()} to add lines
+		\item Combine plots using the \texttt{par} function and \texttt{mfrow} or \texttt{mfcol} arguments
 	\end{itemize}
 	
-	\texttt{lattice} and \texttt{ggplot2} packages
-
+	\vspace{\baselineskip}
+	
+	The \texttt{lattice} and \texttt{ggplot2} are popular visualization packages
+	
+	(\textbf{cf.} Quick-R: Basic Graphs, Advanced Graphs)
 
 }
-
-
+		
 \frame{
-	\frametitle{Sweave}
-	
+	\frametitle{Style}
+
 	\begin{itemize}
-		\item Combines both LaTeX and R code in one document
-		\item Part of every R installation
-		\item Extension \texttt{*.rnw}
-		\item LaTeX document. R command start with \texttt{\<\<\>\>=} and end with \texttt{\@}
-		\item Process in R with \texttt{Sweave()}
-		\item Complie resulting \texttt{*.tex}
+		\item Use a consistent style
+		\item Strive for names that are concise and meaningful
+		\item Place spaces around all operators
+		\item Use \texttt{<-} not \texttt{=} for assignment
+		\item Comment with \texttt{\#}
+		\item Use commented lines to break up your file 
+	\end{itemize}
+
+}
+
+\frame[shrink]{
+	\frametitle{References and Resources}
+	
+	References:
+	\begin{itemize}
+		\item \url{http://adv-r.had.co.nz/}
+		\item \url{http://www.statmethods.net/}
+		\item \url{http://www.statistik.tuwien.ac.at/public/filz/students/SweaveExa.pdf}
+		\item \url{http://nicercode.github.io/}
 	\end{itemize}
 	
+	Resources:
+	\begin{itemize}
+	\item \url{http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml}
+	\item \url{http://stackoverflow.com/}
+	\item \url{http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf}
+	\end{itemize}
 }
-	
-	
-% \frame{
-% 	\frametitle{Style}
-%
-% 	Use a consistent style
-%
-% 	\begin{itemize}
-% 		\item Strive for names that are concise and meaningful
-% 		\item Use \texttt{<-} not \texttt{=} for assignment
-% 		\item Comment with \texttt{\#}
-%
-% 	\end{itemize}
-%
-% }
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Hands-On Practice}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Put students into group like in Sarah Iams recitations 
+% \frame{
+% 	\frametitle{Function: Fibonacci sequence}
+%
+% <<fig=FALSE,echo=TRUE,width=11.43,height=6.71>>=
+%
+% calcFibSeq <- function(len){
+%
+% 	#Initalize vector with 0's
+% 	fibSeq <- rep(0,len)
+%
+% 	fibSeq[1] <- 1
+% 	fibSeq[2] <- 1
+%
+% 	for (index in 3:len){
+%
+% 		fibSeq[index]  <- fibSeq[index-1] + fibSeq[index-2]
+%
+% 	}
+%
+% 	return(fibSeq)
+%
+% }
+%
+% @
+%
+% }
 
-\frame{
-	\frametitle{References}
+\frame[shrink]{
+	\frametitle{Hands-On Practice}
+	
+	With your neighbors, 
 	
 	\begin{itemize}
-		\item \url{http://adv-r.had.co.nz/}
-		\item \url{http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml}
-		\item \url{http://www.statmethods.net/}
-		\item \url{http://nicercode.github.io/}
-		\item \url{http://stackoverflow.com/}
-		\item \url{http://www.statistik.tuwien.ac.at/public/filz/students/SweaveExa.pdf}
-		\item \url{http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf}
-		
+		\item Write a function that returns the first $n$ values of the Fibonacci 
+			  sequence ($F_1=F_2=1,F_{i} = F_{i-1}+F_{i=2}$)
+		\item Import the Wine Data Set and create a histogram, boxplot, \& stripchart of Malic acid. Combine the plots.
+		\item Create a scatterplot matrix of the data set using \texttt{pairs()}. Read its documentation and 
+		 	  put histograms on the diagonal and correlations on the upper triangle.
+		\item Create a scatterplot of Total phenols vs Flavanoids. Calculate the Pearson correlation and
+			  include it in the title of the plot. Combine \texttt{abline} and \texttt{lm}
+			  to add a regression line on the plot. (cf. Quick-R)
+			  
 	\end{itemize}
 	
 }
+
+
+\frame[shrink]{
+	\frametitle{Hands-On Practice}
+	
+	With your neighbors, 
+	
+	\begin{itemize}
+
+		\item Calculate a $178 \times 178$ \textbf{Spearman} correlation matrix of the wines. 
+			  (exclude the \texttt{CLASS} variable (V1) in your calculation). Create an adjacency matrix by setting
+			  all entires of the correlation matrix $\geq 0.99$ to $1$ and all entries $\l 0.99$ to $0$
+		\item Install and load the \texttt{igraph} package. Use the above adjacency matrix 
+			  to create an undirected, unweighted, graph without simple loops. Plot the network.
+		\item Use \texttt{decompose.graph} and \texttt{lapply} to calculate the number of nodes and the degree distribution
+			  of each component (with at least three nodes ) of the above network. Plot the degree distribution of 
+			  each of those components. Combine the plots. Include the number of nodes in the component in the title of the plot.  
+			  
+	\end{itemize}
+	
+}
+
+
 
 \end{document}
