@@ -33,7 +33,7 @@ pairs(mydata)
 
 productMomentCor <- cor(mydata[,7],mydata[,8],method='pearson')
 spearmanCor <- cor(mydata[,7],mydata[,8],method='spearman')
-plot(mydata[,7],mydata[,8])
+plot(mydata[,7],mydata[,8],main)
 abline(lm(V8~V7,data=mydata), col="red")
 summary(lm(V8~V7,data=mydata))
 
@@ -65,7 +65,7 @@ knn
 
 #========= Networks
 
-load(igraph)
+library(igraph)
 corAlcohol <- cor(t(mydata[,2:14]),method='spearman')
 
 

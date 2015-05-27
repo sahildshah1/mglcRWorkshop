@@ -3,6 +3,7 @@
 % \usepackage{beamerthemesplit} // Activate for custom appearance
 \usepackage{mathtools,parskip,hyperref,courier} 
 
+
 \title[MGLC \\ R Workshop]{MGLC Transferable Skills Workshop: R}
 \author[Sahil Shah]{Sahil Shah \vfill 
 	\href{mailto:sahil.shah@u.northwestern.edu}{sahil.shah@u.northwestern.edu}}
@@ -34,11 +35,11 @@
 \frame{
 	\frametitle{Schedule}
 	
-	\begin{itemize}
-		\item[5:30-6:30pm] Introduction \& R Fundamentals
-		\item[6:30-7:30pm] Dinner 
-		\item[7:30-8:30pm] Hands-on
-	\end{itemize}
+	\begin{enumerate}
+		\item Introduction \& Lecture
+		\item Dinner 
+		\item Hands-on Practice
+	\end{enumerate}
 	
 }
 
@@ -60,36 +61,173 @@
 }
 
 \frame{
-	\frametitle{}
+	\frametitle{Wine Data Set}
 
+\begin{figure}
+\centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
-wine <- read.table('wine.txt',header=FALSE,sep=',')
+wineData <- read.table('~/Documents/mglcRWorkshop/wine.txt',header=FALSE,sep=',')
 
 par(mfrow=c(2,7))
 for (colNumber in 1:14) {
-	hist(mydata[,colNumber],main='',xlab=paste('V',colNumber,sep=''),col='red')	
+	hist(wineData[,colNumber],main='',xlab=paste('V',colNumber,sep=''),col='firebrick1')
+		
 }
 
+@
+\end{figure}
+
+}
+
+\frame{
+	\frametitle{Wine Data Set}
+
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+pairs(wineData,col='blue')
+
+@
+\end{figure}
+
+}
+
+
+\frame{
+	\frametitle{V3: Malic acid}
+	
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+
+par(mfrow=c(3,1))
+hist(wineData[,3],col='gold',breaks=25,main='Histogram of V3',xlab="")
+boxplot(wineData[,3],horizontal=TRUE,col='lightblue',main='Boxplot of V3')
+stripchart(wineData[,3],col='red',main='Stripchart of V3')
 
 @
 
+\end{figure}
+
+}
+
+\frame{
+	\frametitle{V8 vs V7}
+	
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+	
+pearsonCor <- cor(wineData[,7],wineData[,8],method='pearson')
+
+plot(wineData[,7],wineData[,8],
+	main=paste("V8 vs. V7, Correlation: ",round(pearsonCor,2)),
+	xlab="V7 (Total phenols)",
+	ylab="V8 (Flavanoids)")
+
+abline(lm(V8~V7,data=wineData), col="red")
+#summary(lm(V8~V7,data=wineData))
+
+@
+\end{figure}
+
+}
+
+
+% \frame{
+% 	\frametitle{K-means}
+%
+% \begin{figure}
+% \centering
+% <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+%
+% @
+% \end{figure}
+%
+% }
+
+
+\frame{
+	\frametitle{}
+	
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+library(igraph)
+wineCor <- cor(t(wineData[,2:14]),method='pearson')
+
+# 178 observations => 15753 unique pairs
+corThres <- sort(wineCor[upper.tri(wineCor)],decreasing=TRUE)[round(0.05*15753)]
+
+wineCor[wineCor<corThres] <- 0
+wineCor[wineCor>=corThres] <- 1
+
+wineGraph <- graph.adjacency(wineCor, mode="undirected", weighted=NULL, diag=FALSE)
+
+plot(wineGraph)
+
+
+@
+\end{figure}
+
+}
+
+\frame{
+	\frametitle{Degree distribution}
+	
+\begin{figure}
+\centering
+<<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
+
+graphComponents <- lapply(decompose.graph(wineGraph), function(component){
+	
+	numNodes <- length(V(component))
+	degrees <- degree(component)
+	
+	return(list(numNodes = numNodes,
+				degrees = degrees))
+	
+})
+
+par(mfrow=c(2,5))
+
+for (compNumber in 1:10){
+	
+	hist(graphComponents[[compNumber]]$degrees,
+		 col='gold',
+		 breaks=25,
+		 main=paste("Degree distribution (N=",graphComponents[[compNumber]]$numNodes,")",sep=''),
+		 xlab="")	
+}
+
+@
+\end{figure}
+
 }
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{R Fundamentals}
+\section[Intro. to R]{Introduction to R}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \frame{
-	\frametitle{Vocab}
+	\frametitle{Working with R}
 	
 	\begin{itemize}
 	
 		\item \texttt{?}
-		\item \texttt{str()} gives short description of any R data structure
-		\item \texttt{ls}
-		\item Comment with \texttt{\#}
+		\item \texttt{ls()} 
+		\item \texttt{rm()}
+		\item \texttt{getwd()}
+		\item \texttt{setwd()}
+		\item \texttt{str()} %gives short description of any R data structure
+		\item \texttt{\#} %Comment
+		\item \texttt{source()}
+		\item \texttt{<-}
 	
 	\end{itemize}
 
@@ -97,22 +235,37 @@ for (colNumber in 1:14) {
 
 \frame{
 	\frametitle{Packages}
-
-
+	
+	\begin{itemize}
+		
+		\item \texttt{install.packages()}
+		\item \texttt{library()}
+		\item Comprehensive R Archive Network (CRAN) 
+		\item Bioconductor 
+		\item \texttt{igraph,lattice,ggplot2,dplyr}
+		
+	\end{itemize}
+	
 
 }
-
 
 \frame{
 	\frametitle{Importing Data}
 	
-	\texttt{read.table}
+	\begin{itemize}
+		\item[CSV]  \texttt{read.table()}
+		\item[Excel] \texttt{read.xlsx()}
+		\item[Stata] \texttt{read.dta()}
+	\end{itemize}
 	
-	header a logical value indicating whether the file contains the names of the variables as its first line
+	\texttt{read.table()}
+	\begin{itemize}
+		\item \texttt{header}
+		\item \texttt{sep}
+	\end{itemize}
+	
 
 }
-
-
 
 
 \frame{
@@ -123,12 +276,12 @@ for (colNumber in 1:14) {
 		\item Individual numbers or strings are actually vectors of length one
 	\end{itemize}
 	
-	\begin{itemize}
+	\begin{enumerate}
 		\item Logical
 		\item Integer
 		\item Double (aka Numeric)
 		\item Character
-	\end{itemize}
+	\end{enumerate}
 	
 }
 
@@ -155,12 +308,31 @@ for (colNumber in 1:14) {
 	
 	\texttt{\$}
 	
+	You need [[ when working with lists. 
+	This is because when [ is applied to a list it always returns a list: 
+	it never gives you the contents of the list. To get the contents, you need [[:
+	
+	Simplifying vs. preserving
 }
 
 
 \frame{
 	\frametitle{Functions}
+	
+	\texttt{myfunction <- function(arg1,\dots)\{ statements return(object)\}}
 
+
+}
+
+\frame{
+	\frametitle{Control Statements}
+	
+	\begin{itemize}
+		\item \texttt{for (var in seq)\{ expr \}
+		\item \texttt{while (cond)\{ expr \} 
+		\item \texttt{if (cond) expr1 else expr2}
+		
+	\end{itemize}
 
 }
 
@@ -170,28 +342,45 @@ for (colNumber in 1:14) {
 	
 	`Split-Combine-Apply'
 	
-	\texttt{lapply}
-
-}
-
-\frame{
-
-	\frametitle{Loops}
-	
 	\begin{itemize}
-		\item
-		\item \texttt{while}
-		
+		\item \texttt{lapply}
+		\item \texttt{sapply}
+		\item cf \texttt{dplyr}
 	\end{itemize}
-	
+
 }
+
 
 \frame{
 	\frametitle{Plotting}
+	
+	\begin{itemize}
+		\item \texttt{hist()}
+		\item \texttt{boxplot()}
+		\item \texttt{plot()}
+	\end{itemize}
+	
+	\texttt{lattice} and \texttt{ggplot2} packages
 
 
 }
 
+
+\frame{
+	\frametitle{Sweave}
+	
+	\begin{itemize}
+		\item Combines both LaTeX and R code in one document
+		\item Part of every R installation
+		\item Extension \texttt{*.rnw}
+		\item LaTeX document. R command start with \texttt{\<\<\>\>=} and end with \texttt{\@}
+		\item Process in R with \texttt{Sweave()}
+		\item Complie resulting \texttt{*.tex}
+	\end{itemize}
+	
+}
+	
+	
 % \frame{
 % 	\frametitle{Style}
 %
@@ -206,13 +395,6 @@ for (colNumber in 1:14) {
 %
 % }
 
-\frame{
-	\frametitle{Sweave}
-
-
-
-
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Hands-On Practice}
