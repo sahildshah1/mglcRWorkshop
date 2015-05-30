@@ -1,3 +1,9 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% May 27, 2015
+% Sahil Shah <sahil.shah@u.northwestern.edu>
+% MGLC Transferable Skills Workshop: R
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \documentclass{beamer}
 \usetheme{Hannover}
 % \usepackage{beamerthemesplit} // Activate for custom appearance
@@ -85,7 +91,9 @@
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
 # Import the Wine Data Set.
-wineData <- read.table('~/Documents/mglcRWorkshop/wine.txt',header=FALSE,sep=',')
+# As written, wine.txt must be in your current working directory
+# Check your current working directiory with `getwd()'
+wineData <- read.table('wine.txt',header=FALSE,sep=',')
 
 par(mfrow=c(3,1))
 hist(wineData[,3],col='gold',breaks=25,main='Histogram of V3',xlab="")
@@ -105,7 +113,7 @@ stripchart(wineData[,3],col='red',main='Stripchart of V3')
 \centering
 <<fig=TRUE,echo=FALSE,width=11.43,height=6.71>>=
 
-#You can find them in the example section of help(pairs)
+# NB. panel.hist and panel.cor were copied from the example section of of help(pairs)
 panel.hist <- function(x, ...)
 {
     usr <- par("usr"); on.exit(par(usr))
@@ -162,7 +170,7 @@ abline(lm(V8~V7,data=wineData), col="red")
 
 
 \frame{
-	\frametitle{Wine Data Set: Network}
+	\frametitle{Wine Data Set: Network ($\rho \geq 0.99$)}
 	
 \begin{figure}
 \centering
@@ -188,7 +196,7 @@ plot(wineGraph)
 }
 
 \frame{
-	\frametitle{Wine Data Set: Graph Components ($N$)}
+	\frametitle{Wine Data Set: Graph Components ($N \geq 3$)}
 	
 \begin{figure}
 \centering
@@ -364,7 +372,7 @@ for (compNumber in 1:length(graphComponents)){
 	\vspace{\baselineskip}
 	
 	%NB. The best way to inspect an object is with \texttt{str}
-	NB. Factors is a vector that can contain only predefined values (\textbf{cf.} Advanced R by Hadley Wickham)
+	NB. A `factor' is a vector that can contain only predefined values (\textbf{cf.} Advanced R by Hadley Wickham)
 	
 }
 
@@ -390,7 +398,7 @@ for (compNumber in 1:length(graphComponents)){
 }
 
 
-\frame{
+\frame[shrink]{
 	\frametitle{Data Manipulation: Subsetting}
 	
 	With the subsetting operator \texttt{[}, you can use
@@ -398,7 +406,7 @@ for (compNumber in 1:length(graphComponents)){
 		\item Positive integers: return elements at specified positions
 		\item Negative integers:  omit elements at specified positions
 		\item Logical vectors:  select elements where the logical value is \texttt{T}
-		%\item Nothing
+		\item Nothing: returns the original vector: NB. Very useful for matrices, data frames, and arrays
 		%\item Zero
 		\item Character vectors: return elements with matching names.
 	\end{itemize}
@@ -559,15 +567,16 @@ for (compNumber in 1:length(graphComponents)){
 %
 % }
 
+
 \frame[shrink]{
-	\frametitle{Hands-On Practice}
+	\frametitle{Hands-On Practice (Solutions in `RWorkshop.rnw')}
 	
 	With your neighbors, 
 	
 	\begin{itemize}
 		\item Write a function that returns the first $n$ values of the Fibonacci 
-			  sequence ($F_1=F_2=1,F_{i} = F_{i-1}+F_{i=2}$)
-		\item Import the Wine Data Set and create a histogram, boxplot, \& stripchart of Malic acid. Combine the plots.
+			  sequence ($F_1=F_2=1,F_{i} = F_{i-1}+F_{i-2}$)
+		\item Import the Wine Data Set and create a histogram, boxplot, \& stripchart of Malic acid (V3). Combine the plots.
 		\item Create a scatterplot matrix of the data set using \texttt{pairs()}. Read its documentation and 
 		 	  put histograms on the diagonal and correlations on the upper triangle.
 		\item Create a scatterplot of Total phenols vs Flavanoids. Calculate the Pearson correlation and
@@ -580,7 +589,7 @@ for (compNumber in 1:length(graphComponents)){
 
 
 \frame[shrink]{
-	\frametitle{Hands-On Practice}
+	\frametitle{Hands-On Practice (Solutions in `RWorkshop.rnw')}
 	
 	With your neighbors, 
 	
@@ -598,7 +607,6 @@ for (compNumber in 1:length(graphComponents)){
 	\end{itemize}
 	
 }
-
 
 
 \end{document}
