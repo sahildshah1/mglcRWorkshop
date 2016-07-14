@@ -16,7 +16,7 @@ Sahil Shah
 
 sahil.shah AT u.northwestern DOT edu
 
-Presented on May, 27 2015 as a MGLC Transferable Skills Workshop
+Presented on May 27, 2015 as a MGLC Transferable Skills Workshop
 
 ---
 
@@ -24,9 +24,7 @@ View the **[slides](https://github.com/sahildshah1/mglcRWorkshop/blob/master/RWo
 
 ---
 
-View the 'Hands-on Practice Solutions'
-
-* See the *.R files above 
+View the 'Hands-on Practice Solutions' -> See the *.R files above 
 
 ---
 
